@@ -1,0 +1,1 @@
+# azamat2210labworks
