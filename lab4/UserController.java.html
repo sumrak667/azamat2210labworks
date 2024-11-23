@@ -1,0 +1,76 @@
+<html>
+<head>
+<title>UserController.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+UserController.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">org</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">lab4</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">springframework</span><span class="s2">.</span><span class="s1">beans</span><span class="s2">.</span><span class="s1">factory</span><span class="s2">.</span><span class="s1">annotation</span><span class="s2">.</span><span class="s1">Autowired</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">springframework</span><span class="s2">.</span><span class="s1">http</span><span class="s2">.</span><span class="s1">ResponseEntity</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">springframework</span><span class="s2">.</span><span class="s1">web</span><span class="s2">.</span><span class="s1">bind</span><span class="s2">.</span><span class="s1">annotation</span><span class="s2">.*;</span>
+
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">List</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">stream</span><span class="s2">.</span><span class="s1">Collectors</span><span class="s2">;</span>
+
+<span class="s1">@RestController</span>
+<span class="s1">@RequestMapping</span><span class="s2">(</span><span class="s3">&quot;/users&quot;</span><span class="s2">)</span>
+<span class="s0">public class </span><span class="s1">UserController </span><span class="s2">{</span>
+
+    <span class="s1">@Autowired</span>
+    <span class="s0">private </span><span class="s1">UserService userService</span><span class="s2">;</span>
+
+    <span class="s1">@PostMapping</span>
+    <span class="s0">public </span><span class="s1">User createUser</span><span class="s2">(</span><span class="s1">@RequestBody User user</span><span class="s2">) {</span>
+        <span class="s0">return </span><span class="s1">userService</span><span class="s2">.</span><span class="s1">createUser</span><span class="s2">(</span><span class="s1">user</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+
+    <span class="s1">@GetMapping</span><span class="s2">(</span><span class="s3">&quot;/{id}&quot;</span><span class="s2">)</span>
+    <span class="s0">public </span><span class="s1">ResponseEntity</span><span class="s2">&lt;</span><span class="s1">User</span><span class="s2">&gt; </span><span class="s1">getUserById</span><span class="s2">(</span><span class="s1">@PathVariable String id</span><span class="s2">) {</span>
+        <span class="s0">return </span><span class="s1">userService</span><span class="s2">.</span><span class="s1">getUserById</span><span class="s2">(</span><span class="s1">id</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">map</span><span class="s2">(</span><span class="s1">ResponseEntity::ok</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">orElse</span><span class="s2">(</span><span class="s1">ResponseEntity</span><span class="s2">.</span><span class="s1">notFound</span><span class="s2">().</span><span class="s1">build</span><span class="s2">());</span>
+    <span class="s2">}</span>
+
+    <span class="s1">@GetMapping</span>
+    <span class="s0">public </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">User</span><span class="s2">&gt; </span><span class="s1">getAllUsers</span><span class="s2">() {</span>
+       <span class="s0">return </span><span class="s1">userService</span><span class="s2">.</span><span class="s1">getAllUsers</span><span class="s2">();</span>
+    <span class="s2">}</span>
+
+    <span class="s1">@GetMapping</span><span class="s2">(</span><span class="s3">&quot;/emails&quot;</span><span class="s2">)</span>
+    <span class="s0">public </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt; </span><span class="s1">getAllEmails</span><span class="s2">(</span><span class="s1">@RequestParam</span><span class="s2">(</span><span class="s1">defaultValue </span><span class="s2">= </span><span class="s3">&quot;&quot;</span><span class="s2">) </span><span class="s1">String email</span><span class="s2">) {</span>
+        <span class="s0">return </span><span class="s2">(</span><span class="s1">email</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">() ? </span><span class="s1">userService</span><span class="s2">.</span><span class="s1">getAllUsers</span><span class="s2">() : </span><span class="s1">userService</span><span class="s2">.</span><span class="s1">getAllUsersByEmail</span><span class="s2">(</span><span class="s1">email</span><span class="s2">))</span>
+                <span class="s2">.</span><span class="s1">stream</span><span class="s2">()</span>
+                <span class="s2">.</span><span class="s1">map</span><span class="s2">(</span><span class="s1">User::getEmail</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">collect</span><span class="s2">(</span><span class="s1">Collectors</span><span class="s2">.</span><span class="s1">toList</span><span class="s2">());  </span>
+    <span class="s2">}</span>
+
+
+
+    <span class="s1">@PutMapping</span><span class="s2">(</span><span class="s3">&quot;/{id}&quot;</span><span class="s2">)</span>
+    <span class="s0">public </span><span class="s1">ResponseEntity</span><span class="s2">&lt;</span><span class="s1">User</span><span class="s2">&gt; </span><span class="s1">updateUser</span><span class="s2">(</span><span class="s1">@PathVariable String id</span><span class="s2">, </span><span class="s1">@RequestBody User updatedUser</span><span class="s2">) {</span>
+        <span class="s1">User user </span><span class="s2">= </span><span class="s1">userService</span><span class="s2">.</span><span class="s1">updateUser</span><span class="s2">(</span><span class="s1">id</span><span class="s2">, </span><span class="s1">updatedUser</span><span class="s2">);</span>
+        <span class="s0">return </span><span class="s2">(</span><span class="s1">user </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) ? </span><span class="s1">ResponseEntity</span><span class="s2">.</span><span class="s1">ok</span><span class="s2">(</span><span class="s1">user</span><span class="s2">) : </span><span class="s1">ResponseEntity</span><span class="s2">.</span><span class="s1">notFound</span><span class="s2">().</span><span class="s1">build</span><span class="s2">();</span>
+    <span class="s2">}</span>
+
+    <span class="s1">@DeleteMapping</span><span class="s2">(</span><span class="s3">&quot;/{id}&quot;</span><span class="s2">)</span>
+    <span class="s0">public </span><span class="s1">ResponseEntity</span><span class="s2">&lt;</span><span class="s1">Void</span><span class="s2">&gt; </span><span class="s1">deleteUser</span><span class="s2">(</span><span class="s1">@PathVariable String id</span><span class="s2">) {</span>
+        <span class="s1">userService</span><span class="s2">.</span><span class="s1">deleteUser</span><span class="s2">(</span><span class="s1">id</span><span class="s2">);</span>
+        <span class="s0">return </span><span class="s1">ResponseEntity</span><span class="s2">.</span><span class="s1">noContent</span><span class="s2">().</span><span class="s1">build</span><span class="s2">();</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>
