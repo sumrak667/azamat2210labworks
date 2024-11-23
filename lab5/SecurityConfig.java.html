@@ -1,0 +1,59 @@
+<html>
+<head>
+<title>SecurityConfig.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #bcbec4;}
+.s1 { color: #cf8e6d;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SecurityConfig.java</font>
+</center></td></tr></table>
+<pre>
+<span class="s1">package </span><span class="s0">org</span><span class="s2">.</span><span class="s0">example</span><span class="s2">.</span><span class="s0">lab5_2</span><span class="s2">;</span>
+
+<span class="s1">import </span><span class="s0">org</span><span class="s2">.</span><span class="s0">springframework</span><span class="s2">.</span><span class="s0">context</span><span class="s2">.</span><span class="s0">annotation</span><span class="s2">.</span><span class="s0">Bean</span><span class="s2">;</span>
+<span class="s1">import </span><span class="s0">org</span><span class="s2">.</span><span class="s0">springframework</span><span class="s2">.</span><span class="s0">context</span><span class="s2">.</span><span class="s0">annotation</span><span class="s2">.</span><span class="s0">Configuration</span><span class="s2">;</span>
+<span class="s1">import </span><span class="s0">org</span><span class="s2">.</span><span class="s0">springframework</span><span class="s2">.</span><span class="s0">security</span><span class="s2">.</span><span class="s0">config</span><span class="s2">.</span><span class="s0">annotation</span><span class="s2">.</span><span class="s0">web</span><span class="s2">.</span><span class="s0">builders</span><span class="s2">.</span><span class="s0">HttpSecurity</span><span class="s2">;</span>
+<span class="s1">import </span><span class="s0">org</span><span class="s2">.</span><span class="s0">springframework</span><span class="s2">.</span><span class="s0">security</span><span class="s2">.</span><span class="s0">config</span><span class="s2">.</span><span class="s0">annotation</span><span class="s2">.</span><span class="s0">web</span><span class="s2">.</span><span class="s0">configuration</span><span class="s2">.</span><span class="s0">EnableWebSecurity</span><span class="s2">;</span>
+<span class="s1">import </span><span class="s0">org</span><span class="s2">.</span><span class="s0">springframework</span><span class="s2">.</span><span class="s0">security</span><span class="s2">.</span><span class="s0">crypto</span><span class="s2">.</span><span class="s0">bcrypt</span><span class="s2">.</span><span class="s0">BCryptPasswordEncoder</span><span class="s2">;</span>
+<span class="s1">import </span><span class="s0">org</span><span class="s2">.</span><span class="s0">springframework</span><span class="s2">.</span><span class="s0">security</span><span class="s2">.</span><span class="s0">crypto</span><span class="s2">.</span><span class="s0">password</span><span class="s2">.</span><span class="s0">PasswordEncoder</span><span class="s2">;</span>
+<span class="s1">import </span><span class="s0">org</span><span class="s2">.</span><span class="s0">springframework</span><span class="s2">.</span><span class="s0">security</span><span class="s2">.</span><span class="s0">web</span><span class="s2">.</span><span class="s0">SecurityFilterChain</span><span class="s2">;</span>
+
+<span class="s0">@Configuration</span>
+<span class="s0">@EnableWebSecurity</span>
+<span class="s1">public class </span><span class="s0">SecurityConfig </span><span class="s2">{</span>
+
+    <span class="s0">@Bean</span>
+    <span class="s1">public </span><span class="s0">SecurityFilterChain securityFilterChain</span><span class="s2">(</span><span class="s0">HttpSecurity http</span><span class="s2">) </span><span class="s1">throws </span><span class="s0">Exception </span><span class="s2">{</span>
+        <span class="s0">http</span>
+                <span class="s2">.</span><span class="s0">authorizeRequests</span><span class="s2">()</span>
+                <span class="s2">.</span><span class="s0">antMatchers</span><span class="s2">(</span><span class="s3">&quot;/login&quot;</span><span class="s2">, </span><span class="s3">&quot;/register&quot;</span><span class="s2">, </span><span class="s3">&quot;/css/**&quot;</span><span class="s2">, </span><span class="s3">&quot;/js/**&quot;</span><span class="s2">).</span><span class="s0">permitAll</span><span class="s2">()</span>
+                <span class="s2">.</span><span class="s0">anyRequest</span><span class="s2">().</span><span class="s0">authenticated</span><span class="s2">()</span>
+                <span class="s2">.</span><span class="s0">and</span><span class="s2">()</span>
+                <span class="s2">.</span><span class="s0">formLogin</span><span class="s2">()</span>
+                <span class="s2">.</span><span class="s0">loginPage</span><span class="s2">(</span><span class="s3">&quot;/login&quot;</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s0">permitAll</span><span class="s2">()</span>
+                <span class="s2">.</span><span class="s0">and</span><span class="s2">()</span>
+                <span class="s2">.</span><span class="s0">logout</span><span class="s2">()</span>
+                <span class="s2">.</span><span class="s0">permitAll</span><span class="s2">();</span>
+
+        <span class="s1">return </span><span class="s0">http</span><span class="s2">.</span><span class="s0">build</span><span class="s2">();</span>
+    <span class="s2">}</span>
+
+
+    <span class="s0">@Bean</span>
+    <span class="s1">public </span><span class="s0">PasswordEncoder passwordEncoder</span><span class="s2">() {</span>
+        <span class="s1">return new </span><span class="s0">BCryptPasswordEncoder</span><span class="s2">();</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+</pre>
+</body>
+</html>

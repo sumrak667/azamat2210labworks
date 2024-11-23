@@ -1,0 +1,63 @@
+<html>
+<head>
+<title>TaskController.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+TaskController.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">org</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">lab5_2</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">springframework</span><span class="s2">.</span><span class="s1">beans</span><span class="s2">.</span><span class="s1">factory</span><span class="s2">.</span><span class="s1">annotation</span><span class="s2">.</span><span class="s1">Autowired</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">springframework</span><span class="s2">.</span><span class="s1">security</span><span class="s2">.</span><span class="s1">access</span><span class="s2">.</span><span class="s1">prepost</span><span class="s2">.</span><span class="s1">PreAuthorize</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">springframework</span><span class="s2">.</span><span class="s1">stereotype</span><span class="s2">.</span><span class="s1">Controller</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">springframework</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Model</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">springframework</span><span class="s2">.</span><span class="s1">web</span><span class="s2">.</span><span class="s1">bind</span><span class="s2">.</span><span class="s1">annotation</span><span class="s2">.*;</span>
+<span class="s0">import </span><span class="s1">respository</span><span class="s2">.</span><span class="s1">CategoryRepository</span><span class="s2">;</span>
+
+<span class="s1">@Controller</span>
+<span class="s1">@RequestMapping</span><span class="s2">(</span><span class="s3">&quot;/tasks&quot;</span><span class="s2">)</span>
+<span class="s0">public class </span><span class="s1">TaskController </span><span class="s2">{</span>
+    <span class="s1">@Autowired</span>
+    <span class="s0">private </span><span class="s1">TaskService taskService</span><span class="s2">;</span>
+    <span class="s1">@Autowired</span>
+    <span class="s0">private </span><span class="s1">CategoryRepository categoryRepository</span><span class="s2">;</span>
+
+    <span class="s1">@GetMapping</span>
+    <span class="s0">public </span><span class="s1">String listTasks</span><span class="s2">(</span><span class="s1">Model model</span><span class="s2">, </span><span class="s1">@AuthenticationPrincipal User user</span><span class="s2">) {</span>
+        <span class="s1">model</span><span class="s2">.</span><span class="s1">addAttribute</span><span class="s2">(</span><span class="s3">&quot;tasks&quot;</span><span class="s2">, </span><span class="s1">taskService</span><span class="s2">.</span><span class="s1">getTasksForUser</span><span class="s2">(</span><span class="s1">user</span><span class="s2">.</span><span class="s1">getId</span><span class="s2">()));</span>
+        <span class="s0">return </span><span class="s3">&quot;taskList&quot;</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">@GetMapping</span><span class="s2">(</span><span class="s3">&quot;/add&quot;</span><span class="s2">)</span>
+    <span class="s0">public </span><span class="s1">String addTaskForm</span><span class="s2">(</span><span class="s1">Model model</span><span class="s2">) {</span>
+        <span class="s1">model</span><span class="s2">.</span><span class="s1">addAttribute</span><span class="s2">(</span><span class="s3">&quot;categories&quot;</span><span class="s2">, </span><span class="s1">categoryRepository</span><span class="s2">.</span><span class="s1">findAll</span><span class="s2">());</span>
+        <span class="s1">model</span><span class="s2">.</span><span class="s1">addAttribute</span><span class="s2">(</span><span class="s3">&quot;task&quot;</span><span class="s2">, </span><span class="s0">new </span><span class="s1">Task</span><span class="s2">());</span>
+        <span class="s0">return </span><span class="s3">&quot;taskForm&quot;</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">@PostMapping</span><span class="s2">(</span><span class="s3">&quot;/add&quot;</span><span class="s2">)</span>
+    <span class="s0">public </span><span class="s1">String saveTask</span><span class="s2">(</span><span class="s1">@ModelAttribute Task task</span><span class="s2">, </span><span class="s1">@AuthenticationPrincipal User user</span><span class="s2">) {</span>
+        <span class="s1">task</span><span class="s2">.</span><span class="s1">setUser</span><span class="s2">(</span><span class="s1">user</span><span class="s2">);</span>
+        <span class="s1">taskService</span><span class="s2">.</span><span class="s1">saveTask</span><span class="s2">(</span><span class="s1">task</span><span class="s2">);</span>
+        <span class="s0">return </span><span class="s3">&quot;redirect:/tasks&quot;</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">@GetMapping</span><span class="s2">(</span><span class="s3">&quot;/delete/{id}&quot;</span><span class="s2">)</span>
+    <span class="s0">public </span><span class="s1">String deleteTask</span><span class="s2">(</span><span class="s1">@PathVariable String id</span><span class="s2">) {</span>
+        <span class="s1">taskService</span><span class="s2">.</span><span class="s1">deleteTask</span><span class="s2">(</span><span class="s1">id</span><span class="s2">);</span>
+        <span class="s0">return </span><span class="s3">&quot;redirect:/tasks&quot;</span><span class="s2">;</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>
